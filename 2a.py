@@ -133,10 +133,8 @@ print(np.mean(bParList2B))
 print(st.mode(bParList2B))
 print(np.median(bParList2B))
 
-
-
-
-
+V = np.mean(bDayProbsAr)
+n = len(bDayProbsAr)
 
 
 
