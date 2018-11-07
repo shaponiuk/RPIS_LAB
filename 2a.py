@@ -19,19 +19,27 @@ with open('us_births_69_88.csv') as csvfile:
     bDays[m - 1][d - 1] = b
 
 bDaysSum = 0
+bDaysMax = 0
 
 for month in bDays:
   for b in month:
     bDaysSum += b
+    if b > bDaysMax:
+      bDaysMax = b
 
 bDaysPre = [
   0 for x in range(0, 12 * 31 + 1)
+]
+
+bDaysNum = [
+  0 for x in range(0, 12 * 31)
 ]
 
 i = 0;
 
 for month in bDays:
   for day in month:
+    bDaysNum[i] = day
     i += 1
     bDaysPre[i] = bDaysPre[i - 1] + day
 
@@ -64,13 +72,17 @@ for month in bDays:
     birthDayProbs.append(b / bDaysSum)
 
 bDayProbsAr = np.array(birthDayProbs)
+bDayFProbs = [
+  bDaysNum[x] / bDaysMax for x in range(0, len(bDaysNum))
+]
+bDayFProbsAr = np.array(bDayFProbs)
 
-def randDay2AA():
-  x = np.random.randint(0, len(bDayProbs))
+def randDay2AA(n):
+  x = np.random.randint(0, len(birthDayProbs))
   p = np.random.random()
 
-  while p > bDayProbs[x]:
-    x = np.random.randint(0, len(bDayProbs))
+  while p > bDayFProbsAr[x]:
+    x = np.random.randint(0, len(birthDayProbs))
     p = np.random.random()
 
   return x + 1
@@ -86,21 +98,21 @@ def randDay2A(x):
     np.arange(1, len(bDayProbsAr) + 1), p = bDayProbsAr
   )
 
-def findRep2A():
+def findRep2A(a):
   x = [0 for x in range(0, len(bDaysPre) - 1)]
-  randomDay = randDay2A(0)
+  randomDay = randDay2AA(0)
   counter = 0
 
   while(x[randomDay - 1] == 0):
     x[randomDay - 1] = 1
-    randomDay = randDay2A(0)
+    randomDay = randDay2AA(0)
     counter += 1
 
   return counter
 
 #bParList2A = [
-#  findRep2A()
-#    for x in range(0, 1000)
+#  findRep2A(0)
+#    for x in range(0, 10000)
 #]
 
 #plt.hist(bParList2A, density = 1)
@@ -110,24 +122,48 @@ def findRep2A():
 #print(st.mode(bParList2A))
 #print(np.median(bParList2A))
 
-randDay2BVec = np.vectorize(randDay2A) 
+nOfBDays = len(bDayProbsAr)
 
-def findRep2B():
-  x = set()
-  zAr = np.zeros(len(bDayProbsAr) + 1)
-  randomDays = randDay2BVec(zAr)
-  counter = 0
+def randDay2B(n):
+  randomDays = np.random.randint(0, nOfBDays, n)
+  randomProbs = np.random.uniform(0, 1, n)
+  randomDayFProbs = bDayFProbsAr[randomDays] 
+  result = randomProbs <= randomDayFProbs
 
-  while randomDays[counter] not in x:
-    x.add(randomDays[counter])
-    counter += 1
+  falseIndexes = []
+
+  for x in range(0, n):
+    if not result[x]:
+      falseIndexes.append(x)
+  
+  if len(falseIndexes) > 0:
+    randomDays[falseIndexes] = randDay2B(len(falseIndexes)) 
+
+  return randomDays
+
+def findRep2B(n):
+  randomDays = randDay2B(2 * n)
+  counters = []
+  rdIndex = 0
+
+  for i in range(0, n):
+    counter = 0
+    s = set()
+
+    while randomDays[rdIndex] not in s:
+      s.add(randomDays[rdIndex])
+      counter += 1
+      rdIndex += 1
+
+      if rdIndex == 2 * n:
+        rdIndex = 0
+        randomDays = randDay2B(2 * n)
+
+    counters.append(counter)
     
-  return counter
+  return counters
 
-bParList2B = [
-  findRep2B()
-    for x in range(0, 1000)
-]
+bParList2B = findRep2B(1000000)
 
 print(np.mean(bParList2B))
 print(st.mode(bParList2B))
@@ -135,7 +171,6 @@ print(np.median(bParList2B))
 
 V = np.mean(bDayProbsAr)
 n = len(bDayProbsAr)
-
 
 
 
