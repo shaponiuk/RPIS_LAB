@@ -163,17 +163,62 @@ def findRep2B(n):
     
   return counters
 
-bParList2B = findRep2B(1000000)
+bParList2B = findRep2B(1000)
 
-print(np.mean(bParList2B))
-print(st.mode(bParList2B))
-print(np.median(bParList2B))
+#print(np.mean(bParList2B))
+#print(st.mode(bParList2B))
+#print(np.median(bParList2B))
 
 V = np.mean(bDayProbsAr)
 n = len(bDayProbsAr)
 
+buckets = [
+  [(i, bDayProbsAr[i])] for i in range(n)
+]
 
+def getCont(i):
+  s = 0
 
+  for x in buckets[i]:
+    s += x[1];
+
+  return s
+
+def transferProbability(fromB, toB):
+  st = getCont(toB)
+
+  while st < V:
+    if buckets[fromB][0][0] + st > V:
+      tup = (V - st, buckets[fromB][0][1])
+      buckets[toB].append(tup);
+      buckets[fromB][0] = (buckets[fromB][0][0] - tup[0], tup[1])
+    else:
+      buckets[toB].append(buckets[fromB][0])
+      buckets[fromB].pop(0)
+
+      st = getCont(toB)
+
+def checkBuckets():
+  underflows = True
+
+  while underflows:
+    underflows = False
+
+    for i in range(n):
+      s = getCont(i)
+
+      if s < V:
+        underflows = True
+
+        for j in range(n):
+          if j != i:
+            sj = getCont(j)
+            
+            if sj > V:
+              transferProbability(j, i)
+        
+checkBuckets()
+print(buckets) 
 
 
 
