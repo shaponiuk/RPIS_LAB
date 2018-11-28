@@ -1,0 +1,10 @@
+3b
+sample the distribution
+
+cumulative distribution
+
+inverse transform sampling
+
+monotonic
+
+Fx(k) = P(X <= k)                       >= p
