@@ -169,12 +169,15 @@ bParList2B = findRep2B(1000)
 #print(st.mode(bParList2B))
 #print(np.median(bParList2B))
 
-V = np.mean(bDayProbsAr)
 n = len(bDayProbsAr)
 
 buckets = [
   [(i, bDayProbsAr[i])] for i in range(n)
+  #[(0, 0.2)], [(1, 0.25)], [(2, 0.3)], [(3, 0.15)], [(4, 0.1)]
 ]
+
+n = len(buckets)
+V = round(1 / n, 19)
 
 def getCont(i):
   s = 0
@@ -185,41 +188,58 @@ def getCont(i):
   return s
 
 def transferProbability(fromB, toB):
+  #print("transferProbability", fromB, toB)
   st = getCont(toB)
 
-  while st < V:
-    if buckets[fromB][0][0] + st > V:
-      tup = (V - st, buckets[fromB][0][1])
-      buckets[toB].append(tup);
-      buckets[fromB][0] = (buckets[fromB][0][0] - tup[0], tup[1])
-    else:
-      buckets[toB].append(buckets[fromB][0])
-      buckets[fromB].pop(0)
+  while st < V and len(buckets[fromB]) > 0:
+    fTup = buckets[fromB][len(buckets[fromB]) - 1]
+    #print(fTup)
 
+    diff = round(V - st, 20)
+    #print(diff)
+
+    if fTup[1] > diff:
+      tup = (fTup[0], diff)
+      buckets[toB].append(tup);
+      buckets[fromB][len(buckets[fromB]) - 1] = (fTup[0], round(fTup[1] - diff, 20))
+      break
+    else:
+      buckets[toB].append(buckets[fromB][len(buckets[fromB]) - 1])
+      buckets[fromB].pop()
       st = getCont(toB)
 
-def checkBuckets():
-  underflows = True
+def checkBucketsLoop():
+  for i in range(n):
+    si = getCont(i)
 
-  while underflows:
-    underflows = False
+    if si < V:
+      #print("i", i, si)
 
-    for i in range(n):
-      s = getCont(i)
-
-      if s < V:
-        underflows = True
-
-        for j in range(n):
-          if j != i:
-            sj = getCont(j)
+      for j in range(n):
+        if j == i:
+          continue
+        else:
+          sj = getCont(j)
             
-            if sj > V:
-              transferProbability(j, i)
-        
-checkBuckets()
-print(buckets) 
+          if sj > V:
+            #print("j", j, sj)
+            transferProbability(j, i)
+            return True
 
+  return False
+
+
+
+def checkBuckets():
+  while checkBucketsLoop():
+    ()
+            
+checkBuckets()
+
+print(buckets)
+
+for x in range(n):
+  print(getCont(x))
 
 
 
