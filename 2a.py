@@ -172,12 +172,12 @@ bParList2B = findRep2B(1000)
 n = len(bDayProbsAr)
 
 buckets = [
-  [(i, bDayProbsAr[i])] for i in range(n)
+  [(i + 1, bDayProbsAr[i])] for i in range(n)
   #[(0, 0.2)], [(1, 0.25)], [(2, 0.3)], [(3, 0.15)], [(4, 0.1)]
 ]
 
 n = len(buckets)
-V = round(1 / n, 19)
+V = round(1 / n, 22)
 
 def getCont(i):
   s = 0
@@ -195,13 +195,13 @@ def transferProbability(fromB, toB):
     fTup = buckets[fromB][len(buckets[fromB]) - 1]
     #print(fTup)
 
-    diff = round(V - st, 20)
+    diff = round(V - st, 22)
     #print(diff)
 
     if fTup[1] > diff:
       tup = (fTup[0], diff)
       buckets[toB].append(tup);
-      buckets[fromB][len(buckets[fromB]) - 1] = (fTup[0], round(fTup[1] - diff, 20))
+      buckets[fromB][len(buckets[fromB]) - 1] = (fTup[0], round(fTup[1] - diff, 22))
       break
     else:
       buckets[toB].append(buckets[fromB][len(buckets[fromB]) - 1])
@@ -236,15 +236,44 @@ def checkBuckets():
             
 checkBuckets()
 
-print(buckets)
+bucketsArray = np.array(buckets)
 
-for x in range(n):
-  print(getCont(x))
+#print(buckets)
 
+#for x in range(n):
+  #print(getCont(x))
 
+def sampleVec(count):
+  bucketIndexes = np.random.random_integers(0, high = n - 1, size = count)
+  placesInBucket = np.random.rand(count) 
+  chosenBuckets = bucketsArray[bucketIndexes]
+  returnArray = np.empty([count])
 
+  i = 0
+  for bucket in chosenBuckets:
+    placesInBucket[i] *= getCont(bucketIndexes[i])
+    s = 0
+    j = 0
 
+    for x in bucket:
+      s += x[1]
+      if placesInBucket[i] < s:
+        returnArray[i] = x[0]
+        break
+        
+      j += 1
+    
+    if (j == len(bucket)):
+      returnArray[i] = bucket[len(bucket) - 1][0]
 
+    i += 1
+
+  return returnArray
+
+print(sampleVec(10000000))
+
+#every iteration it sets one bucket as equally full, if not, the program stops
+#two, because for every underflowing bucket, it fills it with an overflowing bucket, so there are two of pis, if the bucket is overflowing, it won't have more elements
 
 
 
