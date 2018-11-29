@@ -263,20 +263,8 @@ def sampleVec(count):
         
       j += 1
     
-    if (j == len(bucket)):
-      returnArray[i] = bucket[len(bucket) - 1][0]
-
     i += 1
 
   return returnArray
 
-print(sampleVec(10000000))
-
-#every iteration it sets one bucket as equally full, if not, the program stops
-#two, because for every underflowing bucket, it fills it with an overflowing bucket, so there are two of pis, if the bucket is overflowing, it won't have more elements
-
-
-
-
-
-
+print(sampleVec(10000000)) #every iteration it sets one bucket as equally full, if not, the program stops #two, because for every underflowing bucket, it fills it with an overflowing bucket, so there are two of pis, if the bucket is overflowing, it won't have more elements 
