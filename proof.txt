@@ -1,0 +1,20 @@
+The program terminates.
+There is n buckets
+The sum of probabilities is equal to n/n and the size of the bucket is 1/n
+So if there exists an underflowing bucket, there must exist an overflowing bucket.
+Also if there exists an overflowing bucket, there must exist an underflowing bucket, for the probabilities to sum to n/n.
+We can leave out the buckets that are full, and not overflowing (if such exist), let's say there are k of them.
+So now we have n-k buckets and the sum of probabilities is equal to (n-k)/n
+So we take an underflowing bucket and an overflowing bucket.
+We transfer the probability from the second one to the first one.
+The first one becomes a equally full bucket
+It is not underflowing anymore so we can leave it and now we have a problem
+of size n-k-1, the sum of probabilities is equal to (n-k-1)/n
+With every step the size of the problem decrements (an underflowing bucket becomes a full one)
+We leave out the equally full buckets and after n-k (including the described one) steps the program terminates.
+
+At the end every bucket will be of size at most 2.
+We have 3 initial cases (they have one element):
+-The bucket isn't underflowing and overflowing: it is not changed by the algorithm
+-The bucket is underflowing: one additional pi is added and the bucket becomes full, and is not later changed by the algorithm
+-The bucket is overflowing: A part of it is added to an underflowing bucket. If it underflows, or becomes equally full it acts as the upper described ones. If it still overflows (obviously it still has only one element), we can add a part of it to an another underflowing bucket (and so on, and so on) until it underflows or becomes equally full.
