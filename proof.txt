@@ -18,3 +18,4 @@ We have 3 initial cases (they have one element):
 -The bucket isn't underflowing and overflowing: it is not changed by the algorithm
 -The bucket is underflowing: one additional pi is added and the bucket becomes full, and is not later changed by the algorithm
 -The bucket is overflowing: A part of it is added to an underflowing bucket. If it underflows, or becomes equally full it acts as the upper described ones. If it still overflows (obviously it still has only one element), we can add a part of it to an another underflowing bucket (and so on, and so on) until it underflows or becomes equally full.
+So there cannot be more than two elements in a bucket at any point in the program.
