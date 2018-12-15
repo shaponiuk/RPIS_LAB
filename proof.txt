@@ -11,7 +11,7 @@ The first one becomes a equally full bucket
 It is not underflowing anymore so we can leave it and now we have a problem
 of size n-k-1, the sum of probabilities is equal to (n-k-1)/n
 With every step the size of the problem decrements (an underflowing bucket becomes a full one)
-We leave out the equally full buckets and after n-k (including the described one) steps the program terminates.
+We leave out the equally full buckets and after not more than n-k (including the described one) steps the program terminates.
 
 At the end every bucket will be of size at most 2.
 We have 3 initial cases (they have one element):
