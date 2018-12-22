@@ -1,0 +1,3 @@
+With every Ci we exclude a non-negative number of assignments from the set which satisfy Ci.
+As a result on every Ci we only have a set of assignments that didn't satisfy Cj (j < i) and we have less iterations to deal with.
+If we have n random assignents and k satisfy any of Ci, then the approximate number of satisfying assignemnts is (k / n) * 2^m, where m is number of variables in a assignment.
