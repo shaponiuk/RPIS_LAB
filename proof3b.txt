@@ -1,0 +1,7 @@
+These formulas describe a discrete distribution because Sum on all ks P(X = k) is equal to 1.
+
+X doesn't have a mean because we can have indefinite value with certain with certain summing orders in equation Sigma(i, i * P(X = i)).
+
+The median method works better because it clearly indicates the center of the of the distribution (the biggest number of values is where the peak of the plot is).
+
+

@@ -41,14 +41,9 @@ def ratio(n, radius):
 
   return 4 * x / n
 
-rat = ratio(1000, 1.0)
+#rat = ratio(1000000, 1.0)
 
-print(rat)
-
-def checkIfSatisfies(x):
-  return (x[0] > 0 and (x[2] <= 0) and x[3] > 0) or ((x[0] <= 0) and x[1] > 0)
-
-print(checkIfSatisfies([1, 2, -3, 4]))
+#print(rat)
 
 def checkPhiHelper(xl, l):
   for x in l:
@@ -78,19 +73,47 @@ phi = [[55, 3, -50, -57, 2, 51, -5, -56, -45, 1], [28, -1, -26, 35, 42, -43, 45,
 def randB(n):
   return np.random.randint(2, size = n)
 
+n = 100000
+
+randL = [
+  randB(M) for x in range(n)
+]
+
 def computeSuccessfulRatio(n, M, phi):
   successful = 0
 
-  for _ in range(n):
-    if checkPhi(randB(M), phi):
+#  for _ in range(n):
+#    if checkPhi(randB(M), phi):
+#      successful += 1
+
+  for x in randL:
+    if checkPhi(x, phi):
       successful += 1
 
-  return successful / n
+  return (successful / n) * 2 ** M
 
-print(computeSuccessfulRatio(1000, M, phi))
+print(computeSuccessfulRatio(n, M, phi))
 
 # 4d, p1 * 2^(n-l1) + .... + pn || pi - number of succesful
 # maybe preprocess contradicting ones (x1 and not x1)
 # every next one we will be able to sample from the smaller set
 # formula for the estimation: sigma(i, n)pi * 2^n
 # bonus points for computing the variance
+
+def nOfSuccessful(n, M, phi, randL):
+  newList = []
+  l = randL
+  sum = 0
+
+  for p in phi:
+    for r in l:
+      if not checkPhiHelper(r, p):
+        newList.append(r)
+
+    sum += len(l) - len(newList)
+    l = newList
+    newList = []
+
+  return (sum / n) * 2 ** M
+
+#print(nOfSuccessful(n, M, phi, randL))
